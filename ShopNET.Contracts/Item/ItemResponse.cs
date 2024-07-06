@@ -1,6 +1,6 @@
 namespace ShopNET.Contracts.Item;
 
-public record ItemReponse(
+public record ItemResponse(
     Guid Id,
     string Name,
     string Description,

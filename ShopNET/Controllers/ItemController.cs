@@ -11,9 +11,15 @@ public class ItemController : ControllerBase
     [HttpPost]
     public IActionResult CreateItem(CreateItemRequest request)
     {
-        var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, request.Tags);
+        // TODO - move functionallity to service
 
-        return Ok(request);
+        // convert Request to Object
+        var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+
+        // Convert Object to Response
+        var res = new ItemResponse(item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+
+        return Created(nameof(GetItem), res);
     }
 
     [HttpGet("item/{id:guid}")]   // :guid defines type for id
