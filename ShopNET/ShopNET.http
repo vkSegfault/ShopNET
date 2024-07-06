@@ -1,0 +1,6 @@
+@ShopNET_HostAddress = http://localhost:5032
+
+GET {{ShopNET_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
