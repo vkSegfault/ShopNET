@@ -1,7 +1,8 @@
 namespace ShopNET.Contracts.Item;
 
 public record ItemResponse(
-    Guid Id,
+    string info,
+Guid Id,
     string Name,
     string Description,
     DateTime AddedDateTime,

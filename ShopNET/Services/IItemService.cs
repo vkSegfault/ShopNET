@@ -6,8 +6,10 @@ namespace ShopNET.Services;
 
 public interface IItemService
 {
-    void CreasteItem(Item request);
+    void CreateItem(Item request);
     Item GetItem(Guid id);
-    // ItemResponse UpdateItem(Guid id, UpsertItemRequest request);
-    // ItemResponse DeleteItem(Guid id);
+    List<Item> GetAllItems();
+    void UpdateItem(Guid id, Item item);
+    bool ItemExists(Guid id);
+    void DeleteItem(Guid id);
 }

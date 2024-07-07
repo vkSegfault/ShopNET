@@ -23,10 +23,10 @@ public class ItemController : ControllerBase
         var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
 
         // save Item to DB
-        _itemService.CreasteItem(item);
+        _itemService.CreateItem(item);
 
         // Convert Object to Response
-        var res = new ItemResponse(item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+        var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
 
         // it's recommended to return URI for GET of newly created object
         // Uri uri = new Uri($"http://localhost:5032/api/v1/Item/{res.Id}");
@@ -40,7 +40,7 @@ public class ItemController : ControllerBase
     public IActionResult GetItem(Guid id)
     {
         var item = _itemService.GetItem(id);
-        var res = new ItemResponse(item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+        var res = new ItemResponse("item found", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
 
         return Ok(res);
     }
@@ -48,18 +48,35 @@ public class ItemController : ControllerBase
     [HttpGet, Route("all")]   // it's same as HttpGet("all")
     public IActionResult GetAllItems()
     {
-        return Ok();
+        var itemList = _itemService.GetAllItems();
+
+        return Ok(itemList);
     }
 
-    [HttpPut("item/{id:guid}")]   // :guid defines type for id
+    [HttpPut("{id:guid}")]
     public IActionResult UpsertItem(Guid id, UpsertItemRequest request)
     {
-        return Ok(request);
+        if (_itemService.ItemExists(id))
+        {
+            var item = new Item(id, request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+            _itemService.UpdateItem(id, item);
+            var res = new ItemResponse("object updated", id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+            return NoContent();
+        }
+        else
+        {
+            var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+            _itemService.CreateItem(item);
+            var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+            return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
+        }
+
     }
 
-    [HttpDelete("item/{id:guid}")]   // :guid defines type for id
+    [HttpDelete("{id:guid}")]
     public IActionResult DeleteItem(Guid id)
     {
-        return Ok(id);
+        _itemService.DeleteItem(id);
+        return Ok($"removed item: {id}");
     }
 }

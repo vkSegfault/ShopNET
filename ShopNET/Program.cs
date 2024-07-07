@@ -37,6 +37,7 @@ if (app.Environment.IsDevelopment())
 // .WithName("GetWeatherForecast")
 // .WithOpenApi();
 
+app.UseExceptionHandler("/error");   // reroute code errors to this controller so we get HTTP errors instead
 app.MapControllers();
 app.UseRouting();
 app.Run();
