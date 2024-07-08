@@ -1,7 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using ShopNET.Repository;
 using ShopNET.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// string connectionString = "Server=172.17.0.2;Port=5432;User Id=user;Password=pass;Database=mydb;";
+// builder.Services.AddDbContext<ShopNETDBContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 builder.Services.AddControllers();
 
 // Add services to the container.
