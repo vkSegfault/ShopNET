@@ -10,11 +10,13 @@ public class ItemService : IItemService
     //TODO - implement Repository so that we can save entries in DB
     private static readonly Dictionary<Guid, Item> _items = new();
     private static readonly ShopNETDBContext _db = new ShopNETDBContext();
+    private static readonly ShopNETSQL _sql = new ShopNETSQL();
 
     public void CreateItem(Item item)
     {
         _items.Add(item.Id, item);
-        _db.CreateItem(item);
+        // _db.CreateItem(item);
+        _sql.addItemSQL(item);
     }
 
     public Item GetItem(Guid id)
