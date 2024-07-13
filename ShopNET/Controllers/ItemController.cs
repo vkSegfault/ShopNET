@@ -20,6 +20,7 @@ public class ItemController : ControllerBase
     public IActionResult CreateItem(CreateItemRequest request)
     {
         // convert Request to Object
+        // TODO - change Guid.NewGuid() to Guid.CreateVersion7() once .NET 9 is released
         var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
 
         // save Item to DB
