@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using ShopNET.Models;
 
 namespace ShopNET.Repository;
@@ -28,4 +29,27 @@ public class ShopNETDBContext : DbContext
         await db.Items.AddAsync(item);
         await db.SaveChangesAsync();
     }
+}
+
+public class ShopNETSQL
+{
+    public static string connectionString = "Host=localhost;Username=user;Password=pass;Database=mydb";
+
+    public async void addItemSQL(Item item)
+    {
+        var conn = new NpgsqlConnection(connectionString: connectionString);
+        conn.Open();
+        using var cmd = new NpgsqlCommand();
+        cmd.Connection = conn;
+
+        cmd.CommandText = $"DROP TABLE IF EXISTS teachers";
+        await cmd.ExecuteNonQueryAsync();
+        cmd.CommandText= "CREATE TABLE teachers (id SERIAL PRIMARY KEY," +
+            "first_name VARCHAR(255)," +
+            "last_name VARCHAR(255)," +
+            "subject VARCHAR(255)," +
+            "salary INT)";
+        await cmd.ExecuteNonQueryAsync();
+    }
+
 }
