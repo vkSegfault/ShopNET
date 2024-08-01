@@ -16,6 +16,9 @@ public class Item : DbContext
     [Column("description")]
     public string Description { get; internal set; } = string.Empty;
 
+    [Column("price")]
+    public decimal Price { get; internal set; }
+
     [Column("created")]
     public DateTime CreatedDateTime { get; internal set; }
 
