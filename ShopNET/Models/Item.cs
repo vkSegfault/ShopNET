@@ -11,10 +11,10 @@ public class Item : DbContext
     public Guid Id { get; internal set; }
 
     [Column("name")]
-    public string Name { get; internal set; }
+    public string Name { get; internal set; } = string.Empty;
 
     [Column("description")]
-    public string Description { get; internal set; }
+    public string Description { get; internal set; } = string.Empty;
 
     [Column("created")]
     public DateTime CreatedDateTime { get; internal set; }
