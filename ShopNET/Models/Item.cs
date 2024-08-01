@@ -28,6 +28,8 @@ public class Item : DbContext
     [Column("tags")]
     public List<string> Tags { get; internal set; }
 
+    //Navigation key ? - allows access properies of User from here (?)
+    public User? User { get; set; };
 
     public Item(Guid id, string name, string description, DateTime createdDateTime, DateTime lastModifiedDateTime, List<string> tags)
     {
