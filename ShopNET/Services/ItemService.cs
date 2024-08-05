@@ -9,14 +9,21 @@ public class ItemService : IItemService
 {
     //TODO - implement Repository so that we can save entries in DB
     private static readonly Dictionary<Guid, Item> _items = new();
-    private static readonly ShopNETDBContext _db = new ShopNETDBContext();
-    private static readonly ShopNETSQL _sql = new ShopNETSQL();
+    // private static readonly ShopNETSQL _sql = new ShopNETSQL();
 
-    public void CreateItem(Item item)
+    // DI
+    private readonly ShopNETDBContext _context;
+    public ItemService(ShopNETDBContext context)
+    {
+        _context = context;
+    }
+
+    public async void CreateItem(Item item)
     {
         _items.Add(item.Id, item);
-        // _db.CreateItem(item);
-        _sql.addItemSQL(item);
+        await _context.Items.AddAsync(item);
+        await _context.SaveChangesAsync();
+        // _sql.addItemSQL(item);
     }
 
     public Item GetItem(Guid id)

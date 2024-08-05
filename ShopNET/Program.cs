@@ -4,14 +4,14 @@ using ShopNET.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // string connectionString = "Server=172.17.0.2;Port=5432;User Id=user;Password=pass;Database=mydb;";
-// builder.Services.AddDbContext<ShopNETDBContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ShopNETDBContext>(optionsBuilder => optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IItemService, ItemService>();   // tell to use ItemService as implementation of IItemService
+// builder.Services.AddSingleton<IItemService, ItemService>();   // tell to use ItemService as implementation of IItemService
 
 var app = builder.Build();
 
