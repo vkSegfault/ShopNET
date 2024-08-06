@@ -6,8 +6,10 @@ namespace ShopNET.Repository;
 
 public class ShopNETDBContext : DbContext
 {
+    public ShopNETDBContext() { }
+
     // this ctor is needed if injecting DB contnext from app chain
-    public ShopNETDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
+    public ShopNETDBContext(DbContextOptions<ShopNETDBContext> options) : base(options) { }
 
 
     // access Postgres tables
@@ -34,6 +36,7 @@ public class ShopNETDBContext : DbContext
     // }
 }
 
+// use for pure SQL access commands
 // public class ShopNETSQL
 // {
 //     public static string connectionString = "Host=localhost;Username=user;Password=pass;Database=mydb";

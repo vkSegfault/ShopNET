@@ -18,22 +18,38 @@ public class ItemService : IItemService
         _context = context;
     }
 
-    public async void CreateItem(Item item)
+    public void CreateItem(Item item)
     {
-        _items.Add(item.Id, item);
-        await _context.Items.AddAsync(item);
-        await _context.SaveChangesAsync();
+        // _items.Add(item.Id, item);
+        // await _context.Items.AddAsync(item);
+        // await _context.SaveChangesAsync();
+        _context.Items.Add(item);
+        _context.SaveChanges();
+        Console.WriteLine("Object Created");
         // _sql.addItemSQL(item);
     }
 
     public Item GetItem(Guid id)
     {
-        return _items[id];
+        var item = _context.Items.Find(id);
+
+        if (item != null)
+        {
+            return item;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public List<Item> GetAllItems()
+    public IEnumerable<Item> GetAllItems()
     {
-        return _items.Values.ToList<Item>();
+        // .ToList() makes it lazy-evaluated so that we will get 1 Item at time and not all of them at once
+        // but .Select() makes it IEnumerable which is accepted in IAction returned functions in Controllers
+        var items = _context.Items.ToList();
+
+        return items;
     }
 
     public void UpdateItem(Guid id, Item item)

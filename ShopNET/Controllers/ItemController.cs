@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using ShopNET.Contracts.Item;
 using ShopNET.Models;
 using ShopNET.Services;
+using ShopNET.Mappers;
+using ShopNET.DTO;
 
 namespace ShopNET.Controllers;
 
@@ -37,21 +39,32 @@ public class ItemController : ControllerBase
         return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
     }
 
+    // HttpGet and HttpRead are equivalents
     [HttpGet("{id:guid}")]
-    public IActionResult GetItem(Guid id)
+    public IActionResult GetItem([FromRoute] Guid id)
     {
         var item = _itemService.GetItem(id);
-        var res = new ItemResponse("item found", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+        if (item != null)
+        {
+            var itemDTO = item.ToItemDTO();
+            return Ok(itemDTO);
+        }
+        else
+        {
+            return NotFound();
+        }
 
-        return Ok(res);
     }
 
-    [HttpGet, Route("all")]   // it's same as HttpGet("all")
+    [HttpGet]   // it's same as [HttpGet, Route("all")]
     public IActionResult GetAllItems()
     {
         var itemList = _itemService.GetAllItems();
+        var itemDTOList = itemList.Select(i => i.ToItemDTO());
 
-        return Ok(itemList);
+        // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
+        // just return IEnumerable
+        return Ok(itemDTOList);
     }
 
     [HttpPut("{id:guid}")]
