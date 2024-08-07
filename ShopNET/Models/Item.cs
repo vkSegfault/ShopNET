@@ -31,11 +31,14 @@ public class Item : DbContext
     //Navigation key ? - allows access properies of User from here (?)
     // public User? User { get; set; }
 
-    public Item(Guid id, string name, string description, DateTime createdDateTime, DateTime lastModifiedDateTime, List<string> tags)
+    public Item() { }
+
+    public Item(Guid id, string name, string description, decimal price, DateTime createdDateTime, DateTime lastModifiedDateTime, List<string> tags)
     {
         Id = id;
         Name = name;
         Description = description;
+        Price = price;
         CreatedDateTime = createdDateTime;
         LastModifiedDateTime = lastModifiedDateTime;
         Tags = tags;

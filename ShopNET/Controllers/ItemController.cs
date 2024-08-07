@@ -19,17 +19,13 @@ public class ItemController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateItem(CreateItemRequest request)
+    public IActionResult CreateItem([FromBody] ItemRequestDTO request)
     {
-        // convert Request to Object
-        // TODO - change Guid.NewGuid() to Guid.CreateVersion7() once .NET 9 is released
-        var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+        var item = request.ToItem();
 
-        // save Item to DB
         _itemService.CreateItem(item);
 
-        // Convert Object to Response
-        var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+        var res = item.ToItemResponseDTO();
 
         // it's recommended to return URI for GET of newly created object
         // Uri uri = new Uri($"http://localhost:5032/api/v1/Item/{res.Id}");
@@ -37,6 +33,7 @@ public class ItemController : ControllerBase
         // return Created(uri, res);
         // AtAction will return 201 and generate location link from method and route params
         return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
+        // return Created();
     }
 
     // HttpGet and HttpRead are equivalents
@@ -46,7 +43,7 @@ public class ItemController : ControllerBase
         var item = _itemService.GetItem(id);
         if (item != null)
         {
-            var itemDTO = item.ToItemDTO();
+            var itemDTO = item.ToItemResponseDTO();
             return Ok(itemDTO);
         }
         else
@@ -60,7 +57,7 @@ public class ItemController : ControllerBase
     public IActionResult GetAllItems()
     {
         var itemList = _itemService.GetAllItems();
-        var itemDTOList = itemList.Select(i => i.ToItemDTO());
+        var itemDTOList = itemList.Select(i => i.ToItemResponseDTO());
 
         // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
         // just return IEnumerable
@@ -72,14 +69,14 @@ public class ItemController : ControllerBase
     {
         if (_itemService.ItemExists(id))
         {
-            var item = new Item(id, request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+            var item = new Item(id, request.Name, request.Description, request.Price, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
             _itemService.UpdateItem(id, item);
             var res = new ItemResponse("object updated", id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
             return NoContent();
         }
         else
         {
-            var item = new Item(Guid.NewGuid(), request.Name, request.Description, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+            var item = new Item(Guid.NewGuid(), request.Name, request.Description, request.Price, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
             _itemService.CreateItem(item);
             var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
             return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);

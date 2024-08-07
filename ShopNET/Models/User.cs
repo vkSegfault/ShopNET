@@ -15,6 +15,6 @@ public class User : DbContext
 
     // one-to-many relation - list of purchased items
     [Column("purchased")]
-    public List<Item> PurchasedItems { get; internal set; }
+    public List<Item>? PurchasedItems { get; internal set; }
 
 }

@@ -23,9 +23,8 @@ public class ItemService : IItemService
         // _items.Add(item.Id, item);
         // await _context.Items.AddAsync(item);
         // await _context.SaveChangesAsync();
-        _context.Items.Add(item);
-        _context.SaveChanges();
-        Console.WriteLine("Object Created");
+        _context.Items.Add(item);   // track changes
+        _context.SaveChanges();   // save changes to DB
         // _sql.addItemSQL(item);
     }
 
@@ -57,7 +56,7 @@ public class ItemService : IItemService
         if (_items.ContainsKey(id))
         {
             // object already exists, just update it leaving old id
-            _items[id] = new Item(id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+            _items[id] = new Item(id, item.Name, item.Description, item.Price, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
         }
         else
         {

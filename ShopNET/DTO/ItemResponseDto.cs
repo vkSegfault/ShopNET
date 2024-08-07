@@ -1,6 +1,6 @@
 namespace ShopNET.DTO;
 
-public class ItemDTO
+public class ItemResponseDTO
 {
     public Guid Id { get; internal set; }
 
@@ -10,15 +10,11 @@ public class ItemDTO
 
     public decimal Price { get; internal set; }
 
-    // public DateTime CreatedDateTime { get; internal set; }
-
-    // public DateTime LastModifiedDateTime { get; internal set; }
-
     public List<string> Tags { get; internal set; }
 
-    public ItemDTO() { }
+    public ItemResponseDTO() { }
 
-    public ItemDTO(Guid id, string name, string description, decimal price, List<string> tags)  // DateTime createdDateTime, DateTime lastModifiedDateTime,
+    public ItemResponseDTO(Guid id, string name, string description, decimal price, List<string> tags)
     {
         Id = id;
         Name = name;
@@ -27,6 +23,3 @@ public class ItemDTO
         Tags = tags;
     }
 }
-
-// CreatedDateTime = createdDateTime;
-// LastModifiedDateTime = lastModifiedDateTime;
