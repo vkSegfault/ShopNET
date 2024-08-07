@@ -38,9 +38,9 @@ public class ItemController : ControllerBase
 
     // HttpGet and HttpRead are equivalents
     [HttpGet("{id:guid}")]
-    public IActionResult GetItem([FromRoute] Guid id)
+    public async Task<IActionResult> GetItem([FromRoute] Guid id)
     {
-        var item = _itemService.GetItem(id);
+        var item = await _itemService.GetItem(id);
         if (item != null)
         {
             var itemDTO = item.ToItemResponseDTO();
@@ -54,9 +54,9 @@ public class ItemController : ControllerBase
     }
 
     [HttpGet]   // it's same as [HttpGet, Route("all")]
-    public IActionResult GetAllItems()
+    public async Task<IActionResult> GetAllItems()
     {
-        var itemList = _itemService.GetAllItems();
+        var itemList = await _itemService.GetAllItems();
         var itemDTOList = itemList.Select(i => i.ToItemResponseDTO());
 
         // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
@@ -64,19 +64,44 @@ public class ItemController : ControllerBase
         return Ok(itemDTOList);
     }
 
-    [HttpPut("{id:guid}")]
-    public IActionResult UpsertItem(Guid id, UpsertItemRequest request)
+    [HttpPut]
+    public async Task<IActionResult> UpdateItem([FromQuery] Guid id, [FromQuery] string? name, [FromQuery] string? description, [FromQuery] decimal? price, [FromQuery] List<string>? tags)
     {
-        if (_itemService.ItemExists(id))
+        if (await _itemService.ItemExists(id))
         {
-            var item = new Item(id, request.Name, request.Description, request.Price, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
-            _itemService.UpdateItem(id, item);
-            var res = new ItemResponse("object updated", id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
-            return NoContent();
+            var item = await _itemService.GetItem(id);   // start tracking changes to existing object
+            item.Name = name != null ? name : item.Name;
+            item.Description = description != null ? description : item.Description;
+            item.Price = (decimal)(price != null ? price : item.Price);
+            item.Tags = tags != null ? tags : item.Tags;
+            await _itemService.UpdateItem(item);   // save changes of tracked object
+            return Ok(item.ToItemResponseDTO());
         }
         else
         {
-            var item = new Item(Guid.NewGuid(), request.Name, request.Description, request.Price, DateTime.UtcNow, DateTime.UtcNow, request.Tags);
+            return NotFound($"There is no item: {id}");
+        }
+    }
+
+    // use query strings instead of location params
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpsertItem([FromRoute] Guid id, [FromBody] ItemRequestDTO upsertRequest)
+    {
+        // if already exists just update it
+        if (await _itemService.ItemExists(id))
+        {
+            var item = await _itemService.GetItem(id);   // start tracking changes to existing object
+            item.Name = upsertRequest.Name;
+            item.Description = upsertRequest.Description;
+            item.Price = upsertRequest.Price;
+            item.Tags = upsertRequest.Tags;
+            await _itemService.UpdateItem(item);
+            return Ok(item.ToItemResponseDTO());   // NoContent == 204 --> means updated successfully
+        }
+        // if not exists create new one
+        else
+        {
+            var item = new Item(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Description, upsertRequest.Price, DateTime.UtcNow, DateTime.UtcNow, upsertRequest.Tags);
             _itemService.CreateItem(item);
             var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
             return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
@@ -85,9 +110,16 @@ public class ItemController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteItem(Guid id)
+    public async Task<IActionResult> DeleteItem(Guid id)
     {
-        _itemService.DeleteItem(id);
-        return Ok($"removed item: {id}");
+        if (await _itemService.ItemExists(id))
+        {
+            await _itemService.DeleteItem(id);
+            return NoContent();
+        }
+        else
+        {
+            return NotFound($"The item: {id} can't be deleted beacuse it deoesn't exist");
+        }
     }
 }

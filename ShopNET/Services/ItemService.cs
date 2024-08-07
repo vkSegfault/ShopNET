@@ -2,13 +2,12 @@ using ShopNET.Models;
 using ShopNET.Contracts.Item;
 using ShopNET.Repository;
 using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShopNET.Services;
 
 public class ItemService : IItemService
 {
-    //TODO - implement Repository so that we can save entries in DB
-    private static readonly Dictionary<Guid, Item> _items = new();
     // private static readonly ShopNETSQL _sql = new ShopNETSQL();
 
     // DI
@@ -18,19 +17,18 @@ public class ItemService : IItemService
         _context = context;
     }
 
-    public void CreateItem(Item item)
+    public async void CreateItem(Item item)
     {
-        // _items.Add(item.Id, item);
         // await _context.Items.AddAsync(item);
         // await _context.SaveChangesAsync();
-        _context.Items.Add(item);   // track changes
-        _context.SaveChanges();   // save changes to DB
+        await _context.Items.AddAsync(item);   // track changes
+        await _context.SaveChangesAsync();   // save changes to DB
         // _sql.addItemSQL(item);
     }
 
-    public Item GetItem(Guid id)
+    public async Task<Item> GetItem(Guid id)
     {
-        var item = _context.Items.Find(id);
+        var item = await _context.Items.FindAsync(id);
 
         if (item != null)
         {
@@ -42,21 +40,22 @@ public class ItemService : IItemService
         }
     }
 
-    public IEnumerable<Item> GetAllItems()
+    public async Task<IEnumerable<Item>> GetAllItems()
     {
         // .ToList() makes it lazy-evaluated so that we will get 1 Item at time and not all of them at once
         // but .Select() makes it IEnumerable which is accepted in IAction returned functions in Controllers
-        var items = _context.Items.ToList();
+        var items = await _context.Items.ToListAsync();
 
         return items;
     }
 
-    public void UpdateItem(Guid id, Item item)
+    public async Task UpdateItem(Item item)
     {
-        if (_items.ContainsKey(id))
+        if (item != null)
         {
             // object already exists, just update it leaving old id
-            _items[id] = new Item(id, item.Name, item.Description, item.Price, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("UPDATE ITEM");
         }
         else
         {
@@ -65,9 +64,10 @@ public class ItemService : IItemService
         }
     }
 
-    public bool ItemExists(Guid id)
+    public async Task<bool> ItemExists(Guid id)
     {
-        if (_items.ContainsKey(id))
+        var item = await _context.Items.FirstOrDefaultAsync(x => x.Id == id);   // this line starts tracking an object, don't create new one if already exists
+        if (item != null)
         {
             return true;
         }
@@ -77,11 +77,10 @@ public class ItemService : IItemService
         }
     }
 
-    public void DeleteItem(Guid id)
+    public async Task DeleteItem(Guid id)
     {
-        if (_items.ContainsKey(id))
-        {
-            _items.Remove(id);
-        }
+        var item = await GetItem(id);
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
     }
 }
