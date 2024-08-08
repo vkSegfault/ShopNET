@@ -8,9 +8,9 @@ namespace ShopNET.Services;
 public interface IItemService
 {
     void CreateItem(Item request);
-    Task<Item> GetItem(Guid id);
-    Task<IEnumerable<Item>> GetAllItems();
-    Task UpdateItem(Item item);
-    Task<bool> ItemExists(Guid id);
-    Task DeleteItem(Guid id);
+    Task<Item> GetItemAsync(Guid id);
+    Task<IEnumerable<Item>> GetAllItemsAsync();
+    Task UpdateItemAsync(Item item);
+    Task<bool> ItemExistsAsync(Guid id);
+    Task DeleteItemAsync(Guid id);
 }

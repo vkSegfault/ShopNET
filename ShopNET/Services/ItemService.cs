@@ -19,14 +19,12 @@ public class ItemService : IItemService
 
     public async void CreateItem(Item item)
     {
-        // await _context.Items.AddAsync(item);
-        // await _context.SaveChangesAsync();
         await _context.Items.AddAsync(item);   // track changes
         await _context.SaveChangesAsync();   // save changes to DB
         // _sql.addItemSQL(item);
     }
 
-    public async Task<Item> GetItem(Guid id)
+    public async Task<Item> GetItemAsync(Guid id)
     {
         var item = await _context.Items.FindAsync(id);
 
@@ -40,7 +38,7 @@ public class ItemService : IItemService
         }
     }
 
-    public async Task<IEnumerable<Item>> GetAllItems()
+    public async Task<IEnumerable<Item>> GetAllItemsAsync()
     {
         // .ToList() makes it lazy-evaluated so that we will get 1 Item at time and not all of them at once
         // but .Select() makes it IEnumerable which is accepted in IAction returned functions in Controllers
@@ -49,13 +47,12 @@ public class ItemService : IItemService
         return items;
     }
 
-    public async Task UpdateItem(Item item)
+    public async Task UpdateItemAsync(Item item)
     {
         if (item != null)
         {
             // object already exists, just update it leaving old id
             await _context.SaveChangesAsync();
-            Console.WriteLine("UPDATE ITEM");
         }
         else
         {
@@ -64,7 +61,7 @@ public class ItemService : IItemService
         }
     }
 
-    public async Task<bool> ItemExists(Guid id)
+    public async Task<bool> ItemExistsAsync(Guid id)
     {
         var item = await _context.Items.FirstOrDefaultAsync(x => x.Id == id);   // this line starts tracking an object, don't create new one if already exists
         if (item != null)
@@ -77,7 +74,7 @@ public class ItemService : IItemService
         }
     }
 
-    public async Task DeleteItem(Guid id)
+    public async Task DeleteItemAsync(Guid id)
     {
         var item = await GetItem(id);
         _context.Items.Remove(item);
