@@ -7,7 +7,7 @@ namespace ShopNET.Services;
 
 public interface IItemService
 {
-    void CreateItem(Item request);
+    void CreateItem(Item item);
     Task<Item> GetItemAsync(Guid id);
     Task<IEnumerable<Item>> GetAllItemsAsync();
     Task UpdateItemAsync(Item item);

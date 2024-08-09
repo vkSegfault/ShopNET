@@ -4,9 +4,9 @@ using ShopNET.DTO;
 namespace ShopNET.Services;
 
 
-public interface IItemService
+public interface IUserService
 {
-    void CreateUser(User request);
+    void CreateUser(User user);
     Task<User> GetUserAsync(Guid id);
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task UpdateUserAsync(User User);

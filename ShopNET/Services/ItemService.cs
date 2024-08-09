@@ -76,7 +76,7 @@ public class ItemService : IItemService
 
     public async Task DeleteItemAsync(Guid id)
     {
-        var item = await GetItem(id);
+        var item = await GetItemAsync(id);
         _context.Items.Remove(item);
         await _context.SaveChangesAsync();
     }

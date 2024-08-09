@@ -40,7 +40,7 @@ public class ItemController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetItem([FromRoute] Guid id)
     {
-        var item = await _itemService.GetItem(id);
+        var item = await _itemService.GetItemAsync(id);
         if (item != null)
         {
             var itemDTO = item.ToItemResponseDTO();
@@ -56,7 +56,7 @@ public class ItemController : ControllerBase
     [HttpGet]   // it's same as [HttpGet, Route("all")]
     public async Task<IActionResult> GetAllItems()
     {
-        var itemList = await _itemService.GetAllItems();
+        var itemList = await _itemService.GetAllItemsAsync();
         var itemDTOList = itemList.Select(i => i.ToItemResponseDTO());
 
         // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
@@ -67,14 +67,14 @@ public class ItemController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateItem([FromQuery] Guid id, [FromQuery] string? name, [FromQuery] string? description, [FromQuery] decimal? price, [FromQuery] List<string>? tags)
     {
-        if (await _itemService.ItemExists(id))
+        if (await _itemService.ItemExistsAsync(id))
         {
-            var item = await _itemService.GetItem(id);   // start tracking changes to existing object
+            var item = await _itemService.GetItemAsync(id);   // start tracking changes to existing object
             item.Name = name != null ? name : item.Name;
             item.Description = description != null ? description : item.Description;
             item.Price = (decimal)(price != null ? price : item.Price);
             item.Tags = tags != null ? tags : item.Tags;
-            await _itemService.UpdateItem(item);   // save changes of tracked object
+            await _itemService.UpdateItemAsync(item);   // save changes of tracked object
             return Ok(item.ToItemResponseDTO());
         }
         else
@@ -88,14 +88,14 @@ public class ItemController : ControllerBase
     public async Task<IActionResult> UpsertItem([FromRoute] Guid id, [FromBody] ItemRequestDTO upsertRequest)
     {
         // if already exists just update it
-        if (await _itemService.ItemExists(id))
+        if (await _itemService.ItemExistsAsync(id))
         {
-            var item = await _itemService.GetItem(id);   // start tracking changes to existing object
+            var item = await _itemService.GetItemAsync(id);   // start tracking changes to existing object
             item.Name = upsertRequest.Name;
             item.Description = upsertRequest.Description;
             item.Price = upsertRequest.Price;
             item.Tags = upsertRequest.Tags;
-            await _itemService.UpdateItem(item);
+            await _itemService.UpdateItemAsync(item);
             return Ok(item.ToItemResponseDTO());   // NoContent == 204 --> means updated successfully
         }
         // if not exists create new one
@@ -112,9 +112,9 @@ public class ItemController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteItem(Guid id)
     {
-        if (await _itemService.ItemExists(id))
+        if (await _itemService.ItemExistsAsync(id))
         {
-            await _itemService.DeleteItem(id);
+            await _itemService.DeleteItemAsync(id);
             return NoContent();
         }
         else
