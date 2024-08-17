@@ -4,6 +4,7 @@ using ShopNET.Models;
 using ShopNET.Services;
 using ShopNET.Mappers;
 using ShopNET.DTO;
+using ShopNET.Interfaces;
 
 namespace ShopNET.Controllers;
 

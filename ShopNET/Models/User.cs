@@ -20,14 +20,22 @@ public class User : DbContext
     [Column("purchased")]
     public List<Item>? PurchasedItems { get; set; }
 
-    public User() {}
+    [Column("created")]
+    public DateTime CreatedDateTime { get; internal set; }
 
-    public User(Guid id, String name, String surname, List<Item>? purchasedItems)
+    [Column("modified")]
+    public DateTime LastModifiedDateTime { get; internal set; }
+
+    public User() { }
+
+    public User(Guid id, string name, string surname, List<Item>? purchasedItems, DateTime createdDateTime, DateTime lastModifiedDateTime)
     {
         Id = id;
         Name = name;
         Surname = surname;
         PurchasedItems = purchasedItems;
+        CreatedDateTime = createdDateTime;
+        LastModifiedDateTime = lastModifiedDateTime;
     }
 
 }

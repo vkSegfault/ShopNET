@@ -2,7 +2,7 @@ using ShopNET.Models;
 using ShopNET.Contracts.Item;
 using ShopNET.DTO;
 
-namespace ShopNET.Services;
+namespace ShopNET.Interfaces;
 
 
 public interface IItemService

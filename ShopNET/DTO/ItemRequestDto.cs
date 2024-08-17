@@ -9,7 +9,7 @@ public class ItemRequestDTO
 
     public decimal Price { get; set; }
 
-    public List<string> Tags { get; set; }
+    public List<string>? Tags { get; set; }
 
     public ItemRequestDTO() { }
 

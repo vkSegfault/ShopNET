@@ -10,7 +10,7 @@ public class ItemResponseDTO
 
     public decimal Price { get; internal set; }
 
-    public List<string> Tags { get; internal set; }
+    public List<string>? Tags { get; internal set; }
 
     public ItemResponseDTO() { }
 

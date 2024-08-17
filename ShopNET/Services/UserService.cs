@@ -1,5 +1,6 @@
 using ShopNET.Models;
 using ShopNET.Repository;
+using ShopNET.Interfaces;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 

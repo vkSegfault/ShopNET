@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShopNET.Repository;
 using ShopNET.Services;
+using ShopNET.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
