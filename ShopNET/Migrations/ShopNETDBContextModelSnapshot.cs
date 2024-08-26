@@ -74,10 +74,23 @@ namespace ShopNET.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("surname");
 
                     b.HasKey("Id");
 

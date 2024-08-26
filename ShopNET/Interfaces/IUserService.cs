@@ -6,7 +6,7 @@ namespace ShopNET.Interfaces;
 
 public interface IUserService
 {
-    void CreateUser(User user);
+    Task CreateUser(User user);
     Task<User> GetUserAsync(Guid id);
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task UpdateUserAsync(User User);

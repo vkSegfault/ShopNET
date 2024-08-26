@@ -16,7 +16,10 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async void CreateUser(User user)
+    // if you get: "Cannot access a disposed context instance."
+    // 1. it's because you are returning "async void", return "async Task<>" instead 
+    // 2. it's because at least 1 method in controller-service-repository chain is not returning async Task - all of them must return async Task including controller
+    public async Task CreateUser(User user)
     {
         await _context.Users.AddAsync(user);   // track changes
         await _context.SaveChangesAsync();   // save changes to DB

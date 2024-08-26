@@ -5,7 +5,7 @@ namespace ShopNET.Mappers;
 
 public static class UserMapper
 {
-    public static UserResponseDTO TouUerResponseDTO(this User user)
+    public static UserResponseDTO ToUserResponseDTO(this User user)
     {
         return new UserResponseDTO
         {

@@ -13,7 +13,7 @@ using ShopNET.Repository;
 namespace ShopNET.Migrations
 {
     [DbContext(typeof(ShopNETDBContext))]
-    [Migration("20240805173437_init")]
+    [Migration("20240826171203_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -77,10 +77,23 @@ namespace ShopNET.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("surname");
 
                     b.HasKey("Id");
 

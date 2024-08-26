@@ -9,7 +9,7 @@ using ShopNET.Interfaces;
 namespace ShopNET.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]  // [controller] is replaced with below Class name but without "Controller" part, her it's just Item
+[Route("api/v1/[controller]")]  // [controller] is replaced with below Class name but without "Controller" part, her it's just "Item"
 public class ItemController : ControllerBase
 {
     private readonly IItemService _itemService;
@@ -20,11 +20,11 @@ public class ItemController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateItem([FromBody] ItemRequestDTO request)
+    public async Task<IActionResult> CreateItem([FromBody] ItemRequestDTO request)
     {
         var item = request.ToItem();
 
-        _itemService.CreateItem(item);
+        await _itemService.CreateItem(item);
 
         var res = item.ToItemResponseDTO();
 
@@ -103,7 +103,7 @@ public class ItemController : ControllerBase
         else
         {
             var item = new Item(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Description, upsertRequest.Price, DateTime.UtcNow, DateTime.UtcNow, upsertRequest.Tags);
-            _itemService.CreateItem(item);
+            await _itemService.CreateItem(item);
             var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
             return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
         }

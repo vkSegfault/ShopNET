@@ -17,7 +17,10 @@ namespace ShopNET.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false)
+                    name = table.Column<string>(type: "text", nullable: false),
+                    surname = table.Column<string>(type: "text", nullable: false),
+                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

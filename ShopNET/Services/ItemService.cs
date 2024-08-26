@@ -18,7 +18,7 @@ public class ItemService : IItemService
         _context = context;
     }
 
-    public async void CreateItem(Item item)
+    public async Task CreateItem(Item item)
     {
         await _context.Items.AddAsync(item);   // track changes
         await _context.SaveChangesAsync();   // save changes to DB

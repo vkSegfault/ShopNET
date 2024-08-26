@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopNETDBContext>(optionsBuilder => optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IItemService, ItemService>();   // tell to use ItemService as implementation of IItemService
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 // Add services to the container.
