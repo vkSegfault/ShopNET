@@ -54,35 +54,36 @@ public class UserController : ControllerBase
 
     }
 
-    // [HttpGet]   // it's same as [HttpGet, Route("all")]
-    // public async Task<IActionResult> GetAllItems()
-    // {
-    //     var itemList = await _itemService.GetAllItemsAsync();
-    //     var itemDTOList = itemList.Select(i => i.ToItemResponseDTO());
+    [HttpGet]   // it's same as [HttpGet, Route("all")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var userList = await _userService.GetAllUsersAsync();
+        var userDTOList = userList.Select(i => i.ToUserResponseDTO());
 
-    //     // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
-    //     // just return IEnumerable
-    //     return Ok(itemDTOList);
-    // }
+        // don't return List<> here (which is lazy-evaluated) cause we will get strange error about missing DbContext - misleading as fcuk
+        // just return IEnumerable
+        return Ok(userDTOList);
+    }
 
-    // [HttpPut]
-    // public async Task<IActionResult> UpdateItem([FromQuery] Guid id, [FromQuery] string? name, [FromQuery] string? description, [FromQuery] decimal? price, [FromQuery] List<string>? tags)
-    // {
-    //     if (await _itemService.ItemExistsAsync(id))
-    //     {
-    //         var item = await _itemService.GetItemAsync(id);   // start tracking changes to existing object
-    //         item.Name = name != null ? name : item.Name;
-    //         item.Description = description != null ? description : item.Description;
-    //         item.Price = (decimal)(price != null ? price : item.Price);
-    //         item.Tags = tags != null ? tags : item.Tags;
-    //         await _itemService.UpdateItemAsync(item);   // save changes of tracked object
-    //         return Ok(item.ToItemResponseDTO());
-    //     }
-    //     else
-    //     {
-    //         return NotFound($"There is no item: {id}");
-    //     }
-    // }
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser([FromQuery] Guid id, [FromQuery] string? name, [FromQuery] string? surname, [FromQuery] decimal? price, [FromQuery] List<string>? tags)
+    {
+        if (await _userService.UserExistsAsync(id))
+        {
+            var item = await _userService.GetUserAsync(id);   // start tracking changes to existing object
+            item.Name = name != null ? name : item.Name;
+            item.Surname = surname != null ? surname : item.Surname;
+            // TODO: to update Purchased, Created, Modified
+            item.Price = (decimal)(price != null ? price : item.Price);
+            item.Tags = tags != null ? tags : item.Tags;
+            await _itemService.UpdateItemAsync(item);   // save changes of tracked object
+            return Ok(item.ToItemResponseDTO());
+        }
+        else
+        {
+            return NotFound($"There is no item: {id}");
+        }
+    }
 
     // // use query strings instead of location params
     // [HttpPut("{id:guid}")]
