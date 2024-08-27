@@ -29,7 +29,8 @@ public class Item : DbContext
     public List<string> Tags { get; internal set; }
 
     //Navigation key ? - allows access properies of User from here (?)
-    // public User? User { get; set; }
+    [NotMapped]
+    public User User { get; set; }
 
     public Item() { }
 

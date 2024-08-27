@@ -27,7 +27,8 @@ public class UserService : IUserService
 
     public async Task<User> GetUserAsync(Guid id)
     {
-        var user = await _context.Users.FindAsync(id);
+        // var user = await _context.Users.FindAsync(id);
+        var user = await _context.Users.Include(i => i.PurchasedItems).FirstOrDefaultAsync(i => i.Id == id);
 
         if (user != null)
         {
@@ -41,7 +42,8 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<User>> GetAllUsersAsync()
     {
-        var users = await _context.Users.ToListAsync();
+        // var users = await _context.Users.ToListAsync();
+        var users = await _context.Users.Include(i => i.PurchasedItems).ToListAsync();
 
         return users;
     }
