@@ -65,19 +65,18 @@ public class UserController : ControllerBase
         return Ok(userDTOList);
     }
 
+    // QueryStrings
     [HttpPut]
     public async Task<IActionResult> UpdateUser([FromQuery] Guid id, [FromQuery] string? name, [FromQuery] string? surname, [FromQuery] decimal? price, [FromQuery] List<string>? tags)
     {
         if (await _userService.UserExistsAsync(id))
         {
-            var item = await _userService.GetUserAsync(id);   // start tracking changes to existing object
-            item.Name = name != null ? name : item.Name;
-            item.Surname = surname != null ? surname : item.Surname;
-            // TODO: to update Purchased, Created, Modified
-            item.Price = (decimal)(price != null ? price : item.Price);
-            item.Tags = tags != null ? tags : item.Tags;
-            await _itemService.UpdateItemAsync(item);   // save changes of tracked object
-            return Ok(item.ToItemResponseDTO());
+            var user = await _userService.GetUserAsync(id);   // start tracking changes to existing object
+            user.Name = name != null ? name : user.Name;
+            user.Surname = surname != null ? surname : user.Surname;
+            user.LastModifiedDateTime = DateTime.UtcNow;
+            await _userService.UpdateUserAsync(user);   // save changes of tracked object
+            return Ok(user.ToUserResponseDTO());
         }
         else
         {
@@ -85,43 +84,41 @@ public class UserController : ControllerBase
         }
     }
 
-    // // use query strings instead of location params
-    // [HttpPut("{id:guid}")]
-    // public async Task<IActionResult> UpsertItem([FromRoute] Guid id, [FromBody] ItemRequestDTO upsertRequest)
-    // {
-    //     // if already exists just update it
-    //     if (await _itemService.ItemExistsAsync(id))
-    //     {
-    //         var item = await _itemService.GetItemAsync(id);   // start tracking changes to existing object
-    //         item.Name = upsertRequest.Name;
-    //         item.Description = upsertRequest.Description;
-    //         item.Price = upsertRequest.Price;
-    //         item.Tags = upsertRequest.Tags;
-    //         await _itemService.UpdateItemAsync(item);
-    //         return Ok(item.ToItemResponseDTO());   // NoContent == 204 --> means updated successfully
-    //     }
-    //     // if not exists create new one
-    //     else
-    //     {
-    //         var item = new Item(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Description, upsertRequest.Price, DateTime.UtcNow, DateTime.UtcNow, upsertRequest.Tags);
-    //         await _itemService.CreateItem(item);
-    //         var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
-    //         return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
-    //     }
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpsertUser([FromRoute] Guid id, [FromBody] UserRequestDTO upsertRequest)
+    {
+        // if already exists just update it
+        if (await _userService.UserExistsAsync(id))
+        {
+            var user = await _userService.GetUserAsync(id);   // start tracking changes to existing object
+            user.Name = upsertRequest.Name;
+            user.Surname = upsertRequest.Surname;
+            user.LastModifiedDateTime = DateTime.UtcNow;
+            await _userService.UpdateUserAsync(user);
+            return Ok(user.ToUserResponseDTO());   // NoContent == 204 --> means updated successfully
+        }
+        // if not exists create new one
+        else
+        {
+            var user = new User(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Surname, null, DateTime.UtcNow, DateTime.UtcNow);
+            await _userService.CreateUser(user);
+            var res = user.ToUserResponseDTO();
+            return CreatedAtAction(actionName: nameof(GetUser), routeValues: new { id = res.Id }, value: res);
+        }
 
-    // }
+    }
 
-    // [HttpDelete("{id:guid}")]
-    // public async Task<IActionResult> DeleteItem(Guid id)
-    // {
-    //     if (await _itemService.ItemExistsAsync(id))
-    //     {
-    //         await _itemService.DeleteItemAsync(id);
-    //         return NoContent();
-    //     }
-    //     else
-    //     {
-    //         return NotFound($"The item: {id} can't be deleted beacuse it deoesn't exist");
-    //     }
-    // }
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Deleteuser(Guid id)
+    {
+        if (await _userService.UserExistsAsync(id))
+        {
+            await _userService.DeleteUserAsync(id);
+            return NoContent();
+        }
+        else
+        {
+            return NotFound($"The item: {id} can't be deleted beacuse it deoesn't exist");
+        }
+    }
 }
