@@ -104,7 +104,7 @@ public class ItemController : ControllerBase
         {
             var item = new Item(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Description, upsertRequest.Price, DateTime.UtcNow, DateTime.UtcNow, upsertRequest.Tags);
             await _itemService.CreateItem(item);
-            var res = new ItemResponse("object created", item.Id, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
+            var res = new ItemResponse("object created", item.ItemId, item.Name, item.Description, item.CreatedDateTime, item.LastModifiedDateTime, item.Tags);
             return CreatedAtAction(actionName: nameof(GetItem), routeValues: new { id = res.Id }, value: res);
         }
 

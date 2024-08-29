@@ -9,7 +9,7 @@ public static class ItemMapper
     {
         return new ItemResponseDTO
         {
-            Id = item.Id,
+            Id = item.ItemId,
             Name = item.Name,
             Description = item.Description,
             Price = item.Price,
@@ -22,7 +22,7 @@ public static class ItemMapper
         return new Item
         {
             // TODO - change Guid.NewGuid() to Guid.CreateVersion7() once .NET 9 is released
-            Id = Guid.NewGuid(),
+            ItemId = Guid.NewGuid(),
             Name = itemRequestDTO.Name,
             Description = itemRequestDTO.Description,
             Price = itemRequestDTO.Price,

@@ -100,7 +100,7 @@ public class UserController : ControllerBase
         // if not exists create new one
         else
         {
-            var user = new User(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Surname, null, DateTime.UtcNow, DateTime.UtcNow);
+            var user = new User(Guid.NewGuid(), upsertRequest.Name, upsertRequest.Surname, DateTime.UtcNow, DateTime.UtcNow);
             await _userService.CreateUser(user);
             var res = user.ToUserResponseDTO();
             return CreatedAtAction(actionName: nameof(GetUser), routeValues: new { id = res.Id }, value: res);

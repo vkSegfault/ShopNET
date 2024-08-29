@@ -6,7 +6,7 @@ namespace ShopNET.Repository;
 
 public class ShopNETDBContext : DbContext
 {
-    public ShopNETDBContext() { }
+    // public ShopNETDBContext() { }
 
     // this ctor is needed if injecting DB contnext from app chain
     public ShopNETDBContext(DbContextOptions<ShopNETDBContext> options) : base(options) { }
@@ -15,6 +15,11 @@ public class ShopNETDBContext : DbContext
     // access Postgres tables
     public DbSet<Item> Items { get; set; }
     public DbSet<User> Users { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+    }
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     // {
@@ -25,7 +30,7 @@ public class ShopNETDBContext : DbContext
 
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
     // {
-    //     modelBuilder.Entity<Item>().ToTable("items");
+    //     modelBuilder.Entity<User>().HasForeignKey();
     // }
 
     // public async void CreateItem(Item item)

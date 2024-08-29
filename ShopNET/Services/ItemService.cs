@@ -64,7 +64,7 @@ public class ItemService : IItemService
 
     public async Task<bool> ItemExistsAsync(Guid id)
     {
-        var item = await _context.Items.FirstOrDefaultAsync(x => x.Id == id);   // this line starts tracking an object, don't create new one if already exists
+        var item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == id);   // this line starts tracking an object, don't create new one if already exists
         if (item != null)
         {
             return true;

@@ -28,7 +28,7 @@ public class UserService : IUserService
     public async Task<User> GetUserAsync(Guid id)
     {
         // var user = await _context.Users.FindAsync(id);
-        var user = await _context.Users.Include(i => i.PurchasedItems).FirstOrDefaultAsync(i => i.Id == id);
+        var user = await _context.Users.Include(i => i.PurchasedItems).FirstOrDefaultAsync(i => i.UserId == id);
 
         if (user != null)
         {
@@ -64,7 +64,7 @@ public class UserService : IUserService
 
     public async Task<bool> UserExistsAsync(Guid id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);   // this line starts tracking an object, don't create new one if already exists
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == id);   // this line starts tracking an object, don't create new one if already exists
         if (user != null)
         {
             return true;

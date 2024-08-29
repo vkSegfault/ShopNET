@@ -9,10 +9,11 @@ public static class UserMapper
     {
         return new UserResponseDTO
         {
-            Id = user.Id,
+            Id = user.UserId,
             Name = user.Name,
             Surname = user.Surname,
-            PurchasedItems = user.PurchasedItems,
+            // PurchasedItems = user.PurchasedItems,
+            // Item = user.Item,
             CreatedDateTime = user.CreatedDateTime,
             LastModifiedDateTime = user.LastModifiedDateTime,
         };
@@ -23,10 +24,10 @@ public static class UserMapper
         return new User
         {
             // TODO - change Guid.NewGuid() to Guid.CreateVersion7() once .NET 9 is released
-            Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
             Name = userRequestDTO.Name,
             Surname = userRequestDTO.Surname,
-            PurchasedItems = null,
+            // PurchasedItems = null,
             CreatedDateTime = DateTime.UtcNow,
             LastModifiedDateTime = DateTime.UtcNow,
         };
